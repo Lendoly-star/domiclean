@@ -15,13 +15,16 @@ const rdvRoutes = require('./routes/rdvRoutes');
 const app = express();
 const port = process.env.PORT || 4000;
 
+
 app.use(bodyParser.json());
 app.use(cors());
+// app.use(express.json());
+// app.use(bodyParser.urlencoded({ extended: true }));
 
 mongoConnect();
 mysqlConnect();
 
-app.use('/api/users', userRoutes);
+app.use('/api/user', userRoutes);
 app.use('/api/pro', proRoutes);
 app.use('/api/ticket', paiementRoutes);
 app.get('/api/rdv', rdvRoutes);

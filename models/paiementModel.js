@@ -1,6 +1,6 @@
-const bcrypt = require('bcrypt');
-const { sqlConnection } = require('../config/db');
-const jwt = require('jsonwebtoken');
+// const bcrypt = require('bcrypt');
+// const { sqlConnection } = require('../config/db');
+// const jwt = require('jsonwebtoken');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 // var charge = await stripe.charges.retrieve(

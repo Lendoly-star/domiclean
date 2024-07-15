@@ -30,3 +30,38 @@ exports.proLogin = async ({email, password})=>{
         })
     })
 }
+
+exports.getServices = async (proId) => {
+    const query = 'SELECT * FROM pro_services WHERE pro_id = ?';
+
+    return new Promise((resolve, reject) => {
+        sqlConnection.query(query, [proId], (err, result) => {
+            if (err) return reject(err);
+            resolve(result);
+        });
+    });
+};
+
+exports.addService = async (proId, services) => {
+    const query = 'INSERT INTO pro_services (pro_id, service_name) VALUES ?';
+    const values = services.map(service => [proId, service]);
+
+    return new Promise((resolve, reject) => {
+        sqlConnection.query(query, [values], (err, result) => {
+            if (err) return reject(err);
+            resolve(result);
+        });
+    });
+};
+
+exports.addAvailability = async (proId, availability) => {
+    const query = 'INSERT INTO pro_availabilities (pro_id, date, start_time, end_time) VALUES ?';
+    const values = availability.map(slot => [proId, slot.date, slot.start_time, slot.end_time]);
+
+    return new Promise((resolve, reject) => {
+        sqlConnection.query(query, [values], (err, result) => {
+            if (err) return reject(err);
+            resolve(result);
+        });
+    });
+}

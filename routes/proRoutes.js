@@ -11,5 +11,8 @@ const limiter = rateLimit({
 
 router.post('/register_pro', proController.proRegister);
 router.post('/login' , limiter, proController.proLogin);
+router.post('/addService', proController.addService);
+router.post('/getServices', proController.getServices);
+router.post('/addAvailability', proController.addAvailability);
 
 module.exports = router;

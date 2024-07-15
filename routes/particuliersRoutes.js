@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const userController = require('../controllers/userController');
+const userController = require('../controllers/particulierController');
 const jwt = require('jsonwebtoken');
 const rateLimit = require('express-rate-limit');
 const limiter = rateLimit({
@@ -10,6 +10,6 @@ const limiter = rateLimit({
 });
 
 router.post('/register_user', userController.userRegister);
-router.post('/login' , limiter, userController.userLogin);
+router.post('/login_user' , limiter, userController.userLogin);
 
 module.exports = router;
