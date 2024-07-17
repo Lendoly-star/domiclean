@@ -19,21 +19,23 @@ exports.proLogin = async ({email, password})=>{
     })
 };
 
-exports.addService = async (req, res) => {
-    const { proId, services } = req.body;
+exports.addService = async (req) => {
+    const { proId, services } = req;
+    console.log(proId);
+
     if (!proId || !services || services.length === 0) {
-      return res.status(400).json({ message: 'ProId ou services manquants' });
+        return res.status(400).json({ message: 'ProId ou services manquants' });
     }
-  
+    console.log(proId);
     const query = 'INSERT INTO pro_services (pro_id, service_id) VALUES ?';
-   
-  
-    return new Promise((resolve, reject)=>{
-        sqlConnection.query(query, [proId, services], (err, result)=>{
-            if(err) return reject(err);
-            resolve({id: result.insertId})
-        })
-    })
+    const values = services.map(service => [proId, service]);
+
+    return new Promise((resolve, reject) => {
+        sqlConnection.query(query, [values], (err, result) => {
+            if (err) return { message: err.message };
+            return { message: 'Services ajoutés avec succès', result };
+        });
+    });
 };
 
 exports.getServices = async (proId) => {

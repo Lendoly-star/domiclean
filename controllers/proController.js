@@ -20,7 +20,9 @@ exports.proLogin = async (req, res)=>{
 
 exports.addService = async (req, res)=>{
     try {
+        console.log(req.body);
         const {token} = await ProModel.addService(req.body);
+        console.log('ok');
         res.status(201).json({token}) 
     } catch (error) {
         res.status(400).json({message: error.message})
@@ -47,10 +49,12 @@ exports.getAllServices = async (req, res) => {
 
 exports.addAvailability = async (req, res)=>{
     try {
-        const {token} = await ProModel.addAvailability(req.body);
-        res.status(201).json({message: 'Horaire perso ajouté', token}) 
+        const proId = req.user.id; // Utilise l'ID extrait du token
+        const { availability } = req.body;
+        const result = await ProModel.addAvailability(proId, availability);
+        res.status(201).json({ message: 'Disponibilité ajoutée', result });
     } catch (error) {
-        res.status(400).json({message: error.message})
+        res.status(400).json({ message: error.message });
     }
 }
 
