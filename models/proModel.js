@@ -2,18 +2,6 @@ const bcrypt = require('bcrypt');
 const { sqlConnection } = require('../config/db');
 const jwt = require('jsonwebtoken');
 
-exports.proRegister = async (userData) =>{
-    const {nom, prenom, email, password} = userData;
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const query = `INSERT INTO pro (nom, prenom, email, password) VALUES (?,?,?,?)`;
-    return new Promise((resolve, reject)=>{
-        sqlConnection.query(query, [nom, prenom, email, hashedPassword], (err, result)=>{
-            if(err) return reject(err);
-            resolve({id: result.insertId, nom, prenom, email})
-        })
-    })
-}
 
 exports.proLogin = async ({email, password})=>{
     const query = 'SELECT * FROM pro WHERE email =?';
@@ -29,7 +17,24 @@ exports.proLogin = async ({email, password})=>{
             resolve({token})
         })
     })
-}
+};
+
+exports.addService = async (req, res) => {
+    const { proId, services } = req.body;
+    if (!proId || !services || services.length === 0) {
+      return res.status(400).json({ message: 'ProId ou services manquants' });
+    }
+  
+    const query = 'INSERT INTO pro_services (pro_id, service_id) VALUES ?';
+   
+  
+    return new Promise((resolve, reject)=>{
+        sqlConnection.query(query, [proId, services], (err, result)=>{
+            if(err) return reject(err);
+            resolve({id: result.insertId})
+        })
+    })
+};
 
 exports.getServices = async (proId) => {
     const query = 'SELECT * FROM pro_services WHERE pro_id = ?';
@@ -42,14 +47,12 @@ exports.getServices = async (proId) => {
     });
 };
 
-exports.addService = async (proId, services) => {
-    const query = 'INSERT INTO pro_services (pro_id, service_name) VALUES ?';
-    const values = services.map(service => [proId, service]);
-
+exports.getAllServices = async () => {
+    const query = 'SELECT * FROM services';
     return new Promise((resolve, reject) => {
-        sqlConnection.query(query, [values], (err, result) => {
+        sqlConnection.query(query, (err, results) => {
             if (err) return reject(err);
-            resolve(result);
+            resolve(results);
         });
     });
 };
@@ -64,4 +67,14 @@ exports.addAvailability = async (proId, availability) => {
             resolve(result);
         });
     });
-}
+};
+
+exports.getAvailabilities = async (serviceId, date) => {
+    const query = 'SELECT * FROM availabilities WHERE service_id = ? AND date = ?';
+    return new Promise((resolve, reject) => {
+        sqlConnection.query(query, [serviceId, date], (err, result) => {
+            if (err) return reject(err);
+            resolve(result);
+        });
+    });
+};
