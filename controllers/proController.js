@@ -47,11 +47,26 @@ exports.getAllServices = async (req, res) => {
     }
 };
 
-exports.addAvailability = async (req, res)=>{
+exports.getProServices = async (req, res) => {
     try {
         const proId = req.user.id; // Utilise l'ID extrait du token
-        const { availability } = req.body;
-        const result = await ProModel.addAvailability(proId, availability);
+        const services = await ProModel.getProServices(proId);
+        res.status(200).json(services);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+exports.addAvailability = async (req, res) => {
+    try {
+        const proId = req.user.id; // Utilise l'ID extrait du token
+        const { availabilities } = req.body;
+
+        if (!Array.isArray(availabilities) || availabilities.length === 0) {
+            return res.status(400).json({ message: 'Invalid data format. Expected an array of availabilities.' });
+        }
+
+        const result = await ProModel.addAvailability(proId, availabilities);
         res.status(201).json({ message: 'Disponibilité ajoutée', result });
     } catch (error) {
         res.status(400).json({ message: error.message });
@@ -66,4 +81,3 @@ exports.getAvailabilities = async (req, res)=>{
         res.status(400).json({message: error.message})
     }
 }
-

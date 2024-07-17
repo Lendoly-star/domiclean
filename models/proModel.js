@@ -49,6 +49,23 @@ exports.getServices = async (proId) => {
     });
 };
 
+exports.getProServices = async (proId) => {
+    const query = `
+        SELECT services.id, services.service_name
+        FROM services
+        JOIN pro_services ON services.id = pro_services.service_id
+        WHERE pro_services.pro_id = ?
+    `;
+    return new Promise((resolve, reject) => {
+        sqlConnection.query(query, [proId], (err, results) => {
+            if (err) return reject(err);
+            resolve(results);
+        });
+    });
+};
+
+
+
 exports.getAllServices = async () => {
     const query = 'SELECT * FROM services';
     return new Promise((resolve, reject) => {
@@ -59,9 +76,9 @@ exports.getAllServices = async () => {
     });
 };
 
-exports.addAvailability = async (proId, availability) => {
-    const query = 'INSERT INTO pro_availabilities (pro_id, date, start_time, end_time) VALUES ?';
-    const values = availability.map(slot => [proId, slot.date, slot.start_time, slot.end_time]);
+exports.addAvailability = async (proId, availabilities) => {
+    const query = 'INSERT INTO pro_availabilities (pro_id, service_id, date, start_time, end_time) VALUES ?';
+    const values = availabilities.map(slot => [proId, slot.serviceId, slot.date, slot.startTime, slot.endTime]);
 
     return new Promise((resolve, reject) => {
         sqlConnection.query(query, [values], (err, result) => {
