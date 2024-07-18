@@ -1,11 +1,11 @@
 const UserModel = require('../models/particulierModel');
 
-exports.userRegister = async (req, res) =>{
+exports.userRegister = async (req, res) => {
     try {
         const user = await UserModel.userRegister(req.body);
         res.status(201).json(user);
     } catch (error) {
-        res.status(400).json({message: error.message})
+        res.status(400).json({ message: error.message });
     }
 }
 

@@ -3,9 +3,9 @@ const { sqlConnection } = require('../config/db');
 const jwt = require('jsonwebtoken');
 
 exports.userRegister  = async (userData) => {
-    const {nom, prenom, email, password, role} = userData;
+    const { nom, prenom, email, password, role } = userData;
     const hashedPassword = await bcrypt.hash(password, 10);
-    
+
     let query = '';
     if (role === 'client') {
         query = 'INSERT INTO particuliers (nom, prenom, email, password) VALUES (?, ?, ?, ?)';
@@ -14,12 +14,13 @@ exports.userRegister  = async (userData) => {
     } else {
         throw new Error('Rôle invalide');
     }
-    return new Promise((resolve, reject)=>{
-        sqlConnection.query(query, [nom, prenom, email, hashedPassword], (err, result)=>{
-            if(err) return reject(err);
-            resolve({id: result.insertId, nom, prenom, email})
-        })
-    })
+
+    return new Promise((resolve, reject) => {
+        sqlConnection.query(query, [nom, prenom, email, hashedPassword], (err, result) => {
+            if (err) return reject(err);
+            resolve({ id: result.insertId, nom, prenom, email });
+        });
+    });
 };
 
 exports.userLogin = async ({email, password}) => {
