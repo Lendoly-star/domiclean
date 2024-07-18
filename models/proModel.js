@@ -88,12 +88,48 @@ exports.addAvailability = async (proId, availabilities) => {
     });
 };
 
-exports.getAvailabilities = async (serviceId, date) => {
-    const query = 'SELECT * FROM availabilities WHERE service_id = ? AND date = ?';
+exports.getAvailabilities = async (serviceId) => {
+    const query = `
+        SELECT pro.id, pro.nom, pro.prenom
+        FROM pro
+        JOIN pro_services ON pro.id = pro_services.pro_id
+        WHERE pro_services.service_id = ?
+    `;
     return new Promise((resolve, reject) => {
-        sqlConnection.query(query, [serviceId, date], (err, result) => {
+        sqlConnection.query(query, [serviceId], (err, results) => {
             if (err) return reject(err);
-            resolve(result);
+            resolve(results);
         });
     });
 };
+
+exports.getProsByService = async (serviceId) => {
+    const query = `
+        SELECT pro.id, pro.nom, pro.prenom, pro_availabilities.date, pro_availabilities.start_time, pro_availabilities.end_time
+        FROM pro
+        JOIN pro_services ON pro.id = pro_services.pro_id
+        JOIN pro_availabilities ON pro.id = pro_availabilities.pro_id
+        WHERE pro_services.service_id = ?
+    `;
+    return new Promise((resolve, reject) => {
+        sqlConnection.query(query, [serviceId], (err, results) => {
+            if (err) return reject(err);
+            resolve(results);
+        });
+    });
+};
+
+// exports.getAvailablePros = async (serviceId) => {
+//     const query = `
+//         SELECT pro.id, pro.nom, pro.prenom
+//         FROM pro
+//         JOIN pro_services ON pro.id = pro_services.pro_id
+//         WHERE pro_services.service_id = ?
+//     `;
+//     return new Promise((resolve, reject) => {
+//         sqlConnection.query(query, [serviceId], (err, results) => {
+//             if (err) return reject(err);
+//             resolve(results);
+//         });
+//     });
+// };

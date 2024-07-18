@@ -75,9 +75,31 @@ exports.addAvailability = async (req, res) => {
 
 exports.getAvailabilities = async (req, res)=>{
     try {
-        const {token} = await ProModel.getAvailabilities(req.body);
-        res.status(201).json({message: 'Horaire bien récupéré', token}) 
+        const { serviceId } = req.query;
+        const pros = await ProModel.getAvailablePros(serviceId);
+        res.status(200).json(pros);
     } catch (error) {
-        res.status(400).json({message: error.message})
+        res.status(400).json({ message: error.message });
     }
 }
+
+exports.getProsByService = async (req, res) => {
+    try {
+        const { serviceId } = req.query;
+        const pros = await ProModel.getProsByService(serviceId);
+        res.status(200).json(pros);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+
+// exports.getAvailablePros = async (req, res) => {
+//     try {
+//         const { serviceId } = req.query;
+//         const pros = await ProModel.getAvailablePros(serviceId);
+//         res.status(200).json(pros);
+//     } catch (error) {
+//         res.status(400).json({ message: error.message });
+//     }
+// };
