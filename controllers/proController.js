@@ -85,8 +85,9 @@ exports.getAvailabilities = async (req, res)=>{
 
 exports.getProsByService = async (req, res) => {
     try {
-        const { serviceId } = req.query;
-        const pros = await ProModel.getProsByService(serviceId);
+        const { params } = req.body;
+        console.log(params.serviceId,req.body)
+        const pros = await ProModel.getProsByService(params.serviceId);
         res.status(200).json(pros);
     } catch (error) {
         res.status(400).json({ message: error.message });

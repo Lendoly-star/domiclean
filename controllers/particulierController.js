@@ -17,3 +17,13 @@ exports.userLogin = async (req, res)=>{
         res.status(400).json({message: error.message})
     }
 }
+
+exports.getUserInfo = async (req, res) => {
+    try {
+        // L'utilisateur est disponible dans req.user grâce au middleware authenticateJWT
+        const user = req.user;
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+}

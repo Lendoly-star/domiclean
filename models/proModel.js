@@ -104,6 +104,7 @@ exports.getAvailabilities = async (serviceId) => {
 };
 
 exports.getProsByService = async (serviceId) => {
+    console.log(serviceId)
     const query = `
         SELECT pro.id, pro.nom, pro.prenom, pro_availabilities.date, pro_availabilities.start_time, pro_availabilities.end_time
         FROM pro
