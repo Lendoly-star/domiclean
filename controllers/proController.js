@@ -75,12 +75,12 @@ exports.addAvailability = async (req, res) => {
 
 exports.getAvailabilities = async (req, res)=>{
     try {
-        const { serviceId } = req.query;
-        const pros = await ProModel.getAvailablePros(serviceId);
-        res.status(200).json(pros);
-    } catch (error) {
+        const { pro_id } = req.params;
+        const availabilities = await ProModel.getAvailabilities(pro_id);
+        res.status(200).json(availabilities);
+      } catch (error) {
         res.status(400).json({ message: error.message });
-    }
+      }
 }
 
 exports.getProsByService = async (req, res) => {

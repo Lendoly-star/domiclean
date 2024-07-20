@@ -16,6 +16,7 @@ router.post('/getAllServices', authenticateJWT, proController.getAllServices);
 router.post('/proServices', authenticateJWT, proController.getProServices);
 router.post('/getProsByService', authenticateJWT, proController.getProsByService);
 router.post('/addAvailability', authenticateJWT, proController.addAvailability);
+router.post('/availabilities/:pro_id', authenticateJWT, proController.getAvailabilities);
 // router.post('/getAvailablePros', authenticateJWT, proController.getAvailablePros);
 
 module.exports = router;

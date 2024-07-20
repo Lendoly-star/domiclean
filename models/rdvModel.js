@@ -2,15 +2,33 @@ const bcrypt = require('bcrypt');
 const { sqlConnection } = require('../config/db');
 const jwt = require('jsonwebtoken');
 
-exports.BookNewRdv = async (req, res) =>{
+exports.BookNewRdv = async (req, res) => {
     const { id_client, id_pro, service_id, date, time, address, description } = req.body;
-  
-    const query = 'INSERT INTO rdv (id_client, id_pro, service_id, date, time, address, description) VALUES (?, ?, ?, ?, ?, ?, ?)';
-    sqlConnection.query(query, [id_client, id_pro, service_id, date, time, address, description], (err, result) => {
-      if (err) return res.status(500).json({ message: err.message });
-      res.status(201).json({ message: 'Rendez-vous pris avec succès' });
+
+    console.log('Données reçues dans le backend :', req.body);
+
+    if (!date || !time) {
+        return res.status(400).json({ message: 'La date et l\'heure doivent être fournies.' });
+    }
+
+    // Enregistrez le rendez-vous
+    const insertQuery = 'INSERT INTO rdv (id_particulier, id_pro, service_id, date, time, address, description) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    sqlConnection.query(insertQuery, [id_client, id_pro, service_id, date, time, address, description], (insertErr, insertResults) => {
+        if (insertErr) {
+            console.error('Erreur lors de l\'insertion du rendez-vous :', insertErr);
+            return res.status(500).json({ message: insertErr.message });
+        }
+        console.log('Rendez-vous pris avec succès, ID :', insertResults.insertId);
+        res.status(201).json({ message: 'Rendez-vous pris avec succès', rdvId: insertResults.insertId });
     });
 }
+
+
+
+  
+  
+  
+
 
 exports.getRdv = async (req, res) => {
     const { date } = req.query;

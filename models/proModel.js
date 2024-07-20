@@ -30,7 +30,7 @@ exports.addService = async (req) => {
     const query = 'INSERT INTO pro_services (pro_id, service_id) VALUES ?';
     const values = services.map(service => [proId, service]);
 
-    return new Promise((resolve, reject) => {
+    return new Promise(() => {
         sqlConnection.query(query, [values], (err, result) => {
             if (err) return { message: err.message };
             return { message: 'Services ajoutés avec succès', result };
