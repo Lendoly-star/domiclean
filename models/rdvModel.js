@@ -68,3 +68,36 @@ exports.getAvailablePros = async (req, res)=>{
   });
 }
 
+exports.getAppointmentsByProId = async (req, res) => {
+    const { proId } = req.params;
+    const query = `
+      SELECT rdv.*, particuliers.nom AS clientName, services.service_name
+      FROM rdv
+      JOIN particuliers ON rdv.id_particulier = particuliers.id
+      JOIN services ON rdv.service_id = services.id
+      WHERE rdv.id_pro = ?
+    `;
+    sqlConnection.query(query, [proId], (err, results) => {
+      if (err) {
+        return res.status(500).json({ message: err.message });
+      }
+      res.status(200).json(results);
+    });
+  };
+
+  exports.getAppointmentsByClientId = async (req, res) => {
+    const { clientId } = req.params;
+    const query = `
+      SELECT rdv.*, pro.nom AS proName, services.service_name
+      FROM rdv
+      JOIN pro ON rdv.id_pro = pro.id
+      JOIN services ON rdv.service_id = services.id
+      WHERE rdv.id_particulier = ?
+    `;
+    sqlConnection.query(query, [clientId], (err, results) => {
+      if (err) {
+        return res.status(500).json({ message: err.message });
+      }
+      res.status(200).json(results);
+    });
+  };
